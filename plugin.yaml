@@ -1,0 +1,7 @@
+name: zenmux-video
+version: 1.0.0
+description: "ZenMux video generation backend. Supports Veo 3.1 (standard/fast/lite), Seedance 2.0, and Happy Horse 1.0 — text-to-video & image-to-video via ZenMux Vertex AI Compatible API."
+author: colin-chang
+kind: backend
+requires_env:
+  - ZENMUX_API_KEY
