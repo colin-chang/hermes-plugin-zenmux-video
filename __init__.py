@@ -456,6 +456,11 @@ def _extract_video(operation: Any, model_id: str, prompt: str) -> Dict[str, Any]
         if fps:
             extra["fps"] = fps
 
+    # Build a hint for the agent to use MEDIA: syntax when rendering
+    media_hint = ""
+    if video_ref and video_ref.startswith("/"):
+        media_hint = f"MEDIA:{video_ref}"
+
     return success_response(
         video=video_ref,
         model=model_id,
@@ -463,6 +468,7 @@ def _extract_video(operation: Any, model_id: str, prompt: str) -> Dict[str, Any]
         modality=modality,
         provider="zenmux-video",
         extra=extra,
+        media_hint=media_hint,
     )
 
 
