@@ -1,114 +1,224 @@
 # Hermes ZenMux Video Generation Plugin
 
-Hermes Agent 视频生成插件，通过 [ZenMux](https://zenmux.ai/invite/1C3QLF) Vertex AI Compatible API 接入多家视频生成模型。
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Hermes](https://img.shields.io/badge/Hermes-≥%200.7.0-blue)](https://github.com/nousresearch/hermes-agent)
 
-## 支持的模型
+English Version | [中文版本](./README.zh-CN.md)
 
-| 模型 | 厂商 | 特点 | 价格档 |
-|---|---|---|---|
-| `google/veo-3.1-generate-001` | Google | 最高质量，支持音频 | Premium |
-| `google/veo-3.1-fast-generate-001` | Google | 快速生成，支持音频 | Premium |
-| `google/veo-3.1-lite-generate-001` | Google | 经济实惠 | Affordable |
-| `bytedance/doubao-seedance-2.0` | 字节跳动 | 支持音频和负向提示词 | Premium |
-| `alibaba/happyhorse-1.0` | 阿里巴巴 | 支持负向提示词 | Affordable |
+Teach your Hermes AI assistant to generate videos — one API Key connects you to 5 video generation models from 3 providers. Turn text or images into video.
 
-所有模型均支持 **文本生成视频 (text-to-video)** 和 **图片生成视频 (image-to-video)**。
+---
 
-## 安装
+## 😵‍💫 What Is This?
+
+**In one sentence:** This plugin lets Hermes generate videos. You say "shoot a clip of waves crashing on rocks" and it generates one.
+
+Hermes itself only chats — it can't generate video. This plugin connects it to video generation via the [ZenMux](https://zenmux.ai/invite/1C3QLF) API gateway, giving you access to **5 models from Google, ByteDance, and Alibaba**. One ZenMux API Key covers everything — no need to sign up with each provider separately.
+
+---
+
+## ✨ Supported Models
+
+| Model | Provider | Speed | Audio | Best For |
+|-------|----------|-------|-------|----------|
+| **Veo 3.1** | Google | ~60-120s | ✅ | Top quality, cinematic visuals |
+| **Veo 3.1 Fast** | Google | ~30-60s | ✅ | Fast and high-quality — recommended for daily use |
+| **Veo 3.1 Lite** | Google | ~20-45s | ❌ | Budget-friendly, quick output |
+| **Seedance 2.0** | ByteDance | ~45-90s | ✅ | Supports negative prompts for precise control |
+| **Happy Horse 1.0** | Alibaba | ~30-60s | ❌ | Budget-friendly, supports negative prompts |
+
+### Two Generation Methods
+
+- **Text-to-Video**: Write a description, get a video. All models support this.
+- **Image-to-Video**: Give a static image and bring it to life. All models support this.
+
+> For example: upload a photo of ocean waves and say "animate the waves, add sunset lighting."
+
+> 📸 `[screenshot]` — Side-by-side comparison of all 5 models generating the same prompt (e.g., "a cat walking through a garden")
+
+---
+
+## 🚀 Quick Start (4 Steps)
+
+### Prerequisites
+
+- ✅ Running [Hermes Agent](https://github.com/nousresearch/hermes-agent) (≥ 0.7.0)
+- ✅ A [ZenMux](https://zenmux.ai/invite/1C3QLF) account and API Key
+- ✅ Python 3.11+
+
+---
+
+### Step 1: Install the Plugin
 
 ```bash
 hermes plugins install colin-chang/hermes-plugin-zenmux-video --enable
 ```
 
-## 配置
+### Step 2: Install SDK Dependency
 
-### 1. 设置 API Key
-
-```bash
-# 在 ~/.hermes/.env 或环境变量中添加
-ZENMUX_API_KEY=your_zenmux_api_key
-```
-
-在 [ZenMux](https://zenmux.ai/invite/1C3QLF) 获取 API Key。
-
-### 2. 配置 config.yaml
-
-在 `~/.hermes/config.yaml` 中添加：
-
-```yaml
-plugins:
-  enabled:
-    - zenmux-video
-
-video_gen:
-  provider: zenmux-video
-  model: google/veo-3.1-fast-generate-001  # 可选，默认使用此模型
-```
-
-### 3. 安装 SDK 依赖
+This plugin requires Google's `google-genai` SDK (ZenMux uses Vertex AI protocol for video models):
 
 ```bash
-# 插件需要 google-genai SDK
-uv pip install --python $(which hermes | xargs head -1 | sed 's|#!/usr/bin/env bash||') google-genai
-# 或
 pip install google-genai
 ```
 
-> **注意：** 需要安装到 Hermes Agent 使用的 Python 环境中。
+> 💡 If you use Hermes' bundled Python environment, make sure it's installed to the right place.
 
-## 使用示例
+### Step 3: Configure API Key
 
-### 文本生成视频
+Open `~/.hermes/.env` and add:
 
-```
-请用 Veo 3.1 生成一段视频：一只猫在花园里散步，电影级光影效果
-```
-
-### 图片生成视频
-
-```
-请把这张图片动画化：让海浪动起来，添加日落光影效果
+```bash
+ZENMUX_API_KEY=your-zenmux-api-key
 ```
 
-### 指定模型
+### Step 4: Set the Video Generation Backend
 
+Add to `~/.hermes/config.yaml`:
+
+```yaml
+video_gen:
+  provider: zenmux-video
+  model: google/veo-3.1-fast-generate-001   # default; change as needed
 ```
-用 Seedance 2.0 生成一段视频：海浪拍打礁石，航拍视角
+
+Restart Hermes to apply. Now try telling Hermes "Generate a video of waves crashing on rocks."
+
+---
+
+## 📖 Usage Guide
+
+### Text-to-Video
+
+Just describe what you want like a normal conversation:
+
+> Generate a video: an orange cat strolling through a garden at sunset, cinematic lighting, 10 seconds
+
+> Use Veo to shoot: a drone flyover of snow-capped mountains, swirling mist
+
+### Image-to-Video
+
+If Hermes previously generated an image for you, you can ask it to "turn that image into a video":
+
+> Animate that ocean photo: make the waves crash, add sunset lighting
+
+> Bring that city nightscape to life: traffic flowing, lights flickering
+
+### Switching Models
+
+**Method 1: Mention it in your prompt** (no config change needed)
+
+- Say "Use **Veo** to generate..." → auto-selects Veo 3.1
+- Say "Use **Seedance** to generate..." → auto-selects Seedance 2.0
+- Say "Use **Happy Horse** to generate..." → auto-selects Happy Horse 1.0
+
+**Method 2: Edit the config file**
+
+```yaml
+video_gen:
+  zenmux:
+    model: bytedance/doubao-seedance-2.0
 ```
 
-## 模型选择逻辑
+**Method 3: Environment variable**
 
-优先级从高到低：
+```bash
+export ZENMUX_VIDEO_MODEL=alibaba/happyhorse-1.0
+```
 
-1. 工具调用中显式指定的 `model` 参数
-2. 提示词中的关键词匹配（如 "veo"、"seedance"、"happy horse"）
-3. `ZENMUX_VIDEO_MODEL` 环境变量
-4. `video_gen.zenmux.model` 配置项
-5. `video_gen.model` 配置项
-6. 默认模型：`google/veo-3.1-fast-generate-001`
+### Model Selection Priority
 
-## 模型能力对比
+When multiple methods are active simultaneously, priority from highest to lowest:
 
-| 能力 | Veo 3.1 | Veo 3.1 Fast | Veo 3.1 Lite | Seedance 2.0 | Happy Horse |
-|---|---|---|---|---|---|
+1. Prompt keyword (e.g., "use Veo" → auto-selects Veo 3.1)
+2. `ZENMUX_VIDEO_MODEL` environment variable
+3. `video_gen.zenmux.model` config setting
+4. `video_gen.model` config setting
+5. Default model: `google/veo-3.1-fast-generate-001`
+
+---
+
+## 📊 Model Capability Comparison
+
+| Capability | Veo 3.1 | Veo 3.1 Fast | Veo 3.1 Lite | Seedance 2.0 | Happy Horse |
+|------------|---------|--------------|--------------|--------------|-------------|
 | Text-to-Video | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Image-to-Video | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 音频生成 | ✅ | ✅ | ❌ | ✅ | ❌ |
-| 负向提示词 | ❌ | ❌ | ❌ | ✅ | ✅ |
-| 分辨率 | 720p/1080p | 720p/1080p | 480p/720p | 720p/1080p | 480p/720p |
-| 宽高比 | 16:9/9:16/1:1 | 16:9/9:16/1:1 | 16:9/9:16 | 16:9/9:16/1:1 | 16:9/9:16/1:1 |
-| 时长范围 | 5-15s | 5-10s | 4-8s | 5-10s | 4-10s |
+| Audio | ✅ | ✅ | ❌ | ✅ | ❌ |
+| Negative Prompts | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Resolution | 720p/1080p | 720p/1080p | 480p/720p | 720p/1080p | 480p/720p |
+| Aspect Ratio | 16:9/9:16/1:1 | 16:9/9:16/1:1 | 16:9/9:16 | 16:9/9:16/1:1 | 16:9/9:16/1:1 |
+| Duration | 5-15s | 5-10s | 4-8s | 5-10s | 4-10s |
 
-## 异步生成流程
+---
 
-视频生成采用异步轮询机制：
+## 🧱 How Does It Work?
 
-1. 提交生成请求 → 返回 Operation
-2. 定期轮询 Operation 状态（默认 10 秒间隔）
-3. 生成完成后下载视频并保存到本地缓存
+```
+You say "shoot a wave video" ──→ Hermes ──→ This plugin ──→ ZenMux API ──→ Google / ByteDance / Alibaba
+                                         │
+                                    ZenMux acts as a "translator":
+                                    no matter which provider's model you choose,
+                                    everything goes through one API Key
+```
 
-最长等待时间默认 300 秒（5 分钟），可通过代码中的 `DEFAULT_MAX_POLL_TIME` 调整。
+Video generation is much slower than image generation — you can't just "say it and get it" instantly. It works in three stages:
 
-## 许可证
+1. **Submit request**: The plugin sends your description to ZenMux
+2. **Poll for completion**: Checks every 10 seconds "is it done yet?", waiting up to 5 minutes
+3. **Download video**: Once generated, auto-downloads to local cache — plays directly in chat
 
-MIT License
+The async polling mechanism:
+- Submits a generation request → receives an Operation ID
+- Polls the Operation status at regular intervals (default: every 10 seconds)
+- Once complete, downloads the video and saves it to local cache
+
+Maximum wait time defaults to 300 seconds (5 minutes).
+
+---
+
+## ❓ FAQ
+
+**Q: Do I need separate accounts for Google, ByteDance, and Alibaba?**
+
+A: No. One ZenMux account, one API Key, all models included.
+
+**Q: Why is video generation so slow?**
+
+A: Video generation is far more complex than image generation — it can take anywhere from seconds to 2 minutes, depending on the model and video length. For daily use, **Veo 3.1 Fast** (30-60s) offers the best value.
+
+**Q: Which models generate video with audio?**
+
+A: Veo 3.1, Veo 3.1 Fast, and Seedance 2.0 support audio. Veo 3.1 Lite and Happy Horse do not.
+
+**Q: Can I control video duration and resolution?**
+
+A: Yes. Just mention it in your prompt, e.g., "generate an 8-second 1080p video." But different models have different limits — Veo 3.1 Lite maxes out at 720p / 8 seconds. Check the capability comparison table above for details.
+
+**Q: What are negative prompts?**
+
+A: They tell the AI what **not** to include. For example: "Generate a city nightscape, **no fog**, **no people**." Seedance 2.0 and Happy Horse 1.0 support this feature.
+
+**Q: Where are the generated videos saved?**
+
+A: Hermes auto-saves them to local cache. You can play them directly in chat.
+
+---
+
+## 📁 Project Structure
+
+```
+zenmux-video/
+├── plugin.yaml              # Plugin metadata
+├── __init__.py              # Plugin entry point (VideoGenProvider implementation)
+├── README.md                # This document
+├── README.zh-CN.md          # Chinese documentation
+├── LICENSE                  # MIT
+└── .gitignore
+```
+
+---
+
+## 📄 License
+
+MIT — see [LICENSE](LICENSE)
