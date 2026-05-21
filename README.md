@@ -1,6 +1,6 @@
 # Hermes ZenMux Video Generation Plugin
 
-Hermes Agent 视频生成插件，通过 [ZenMux](https://zenmux.ai) Vertex AI Compatible API 接入多家视频生成模型。
+Hermes Agent 视频生成插件，通过 [ZenMux](https://zenmux.ai/invite/1C3QLF) Vertex AI Compatible API 接入多家视频生成模型。
 
 ## 支持的模型
 
@@ -29,7 +29,7 @@ hermes plugins install colin-chang/hermes-plugin-zenmux-video --enable
 ZENMUX_API_KEY=your_zenmux_api_key
 ```
 
-在 [ZenMux](https://zenmux.ai/settings/api-keys) 获取 API Key。
+在 [ZenMux](https://zenmux.ai/invite/1C3QLF) 获取 API Key。
 
 ### 2. 配置 config.yaml
 
