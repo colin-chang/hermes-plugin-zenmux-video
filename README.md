@@ -34,8 +34,6 @@ Hermes itself only chats — it can't generate video. This plugin connects it to
 
 > For example: upload a photo of ocean waves and say "animate the waves, add sunset lighting."
 
-> 📸 `[screenshot]` — Side-by-side comparison of all 5 models generating the same prompt (e.g., "a cat walking through a garden")
-
 ---
 
 ## 🚀 Quick Start (4 Steps)
